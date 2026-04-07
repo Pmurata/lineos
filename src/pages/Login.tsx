@@ -6,12 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Chrome, Mail, Lock, UserPlus, LogIn, ArrowRight } from "lucide-react";
 import { LineosLogo } from "@/components/brand/LineosLogo";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"login" | "register">("login");
+
+  const { setMockRole } = useAuth();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +43,11 @@ export default function Login() {
     }
   };
 
+  const handleDemoMode = () => {
+    setMockRole("owner");
+    toast.info("Acesso liberado via Modo de Demonstração");
+  };
+
   const handleGoogleLogin = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -58,18 +66,20 @@ export default function Login() {
     <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
       {/* Background Image with Overlay */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 scale-105"
-        style={{ backgroundImage: "url('/login_background.png')" }}
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 scale-105"
+        style={{ backgroundImage: "url('/lineos/login_background.png')" }}
       />
-      <div className="absolute inset-0 z-1 bg-gradient-to-br from-black/60 via-black/40 to-primary/30 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 z-1 bg-gradient-to-br from-black/70 via-black/40 to-primary/30 backdrop-blur-[1px]" />
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 w-full max-w-[440px]"
       >
-        <div className="flex justify-center mb-8">
-          <LineosLogo className="drop-shadow-2xl brightness-200" />
+        <div className="flex justify-center mb-10">
+          <div className="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-2xl">
+            <LineosLogo className="h-12 w-auto brightness-0 invert" />
+          </div>
         </div>
         
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl overflow-hidden">
@@ -137,18 +147,29 @@ export default function Login() {
 
               <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
-                <div className="relative flex justify-center text-xs uppercase"><span className="bg-transparent px-2 text-white/30">Ou continue com</span></div>
+                <div className="relative flex justify-center text-xs uppercase"><span className="bg-transparent px-2 text-white/30">Opções alternitivas</span></div>
               </div>
 
-              <Button 
-                type="button" 
-                variant="outline" 
-                className="w-full h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 transition-all border"
-                onClick={handleGoogleLogin}
-              >
-                <Chrome className="w-4 h-4 mr-2 text-secondary" />
-                Google Account
-              </Button>
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 transition-all border text-xs"
+                  onClick={handleGoogleLogin}
+                >
+                  <Chrome className="w-3.5 h-3.5 mr-2 text-secondary" />
+                  Google
+                </Button>
+
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="h-11 bg-primary/20 border-primary/30 text-white hover:bg-primary/30 transition-all border text-xs"
+                  onClick={handleDemoMode}
+                >
+                  Acesso de Teste
+                </Button>
+              </div>
 
               <div className="mt-8 text-center">
                 <button 
