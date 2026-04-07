@@ -30,7 +30,7 @@ const ProtectedRoutes = () => {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<RoleBasedHome />} />
         <Route path="/plantel" element={<Plantel />} />
